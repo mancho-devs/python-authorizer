@@ -2,7 +2,7 @@
 
 ## Installation
 ```bash
-pip install authorizer
+pip install git+https://github.com/mancho-devs/python-authorizer.git
 ```
 
 ### Verify:
