@@ -19,7 +19,7 @@ class Signer:
         return self.http_method.lower()
 
     def _get_path(self):
-        return unquote(self.path)
+        return unquote(self.path or '')
 
     def _get_headers_data(self):
         if 'Host' not in self.headers.keys():

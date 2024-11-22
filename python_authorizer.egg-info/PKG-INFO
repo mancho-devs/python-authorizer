@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: python-authorizer
-Version: 0.0.7
+Version: 0.0.8
 Summary: Authorizer for Payments Gateway server and Payments Gateway clients
 Home-page: https://@github.com/mancho-devs/python-authorizer
 Author: Mancho

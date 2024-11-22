@@ -111,6 +111,13 @@ class TestAuthorizer(unittest.TestCase):
 
         self.assertEqual('/services/жаны-cервис', signer.get_path())
 
+    def test_should_successfully_get_empty_path(self):
+        request_data = {**self.request_data, 'path': None}
+
+        signer = TestSigner(**request_data)
+
+        self.assertEqual('', signer.get_path())
+
     def test_should_successfully_get_json_body(self):
         signer = TestSigner(**self.request_data)
 
