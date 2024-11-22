@@ -10,7 +10,8 @@ Prepare `request_data` from request.
 
 In order to verify `signature` you need only `public_key`. Example for verify:
 ```python
-...
+from authorizer import Signer
+
 request_data = {
     'body': {'payment': 'payment', 'amount': 100},
     'headers': {
@@ -36,7 +37,6 @@ signer = Signer(request_data)
 
 is_valid = signer.verify(public_key, signature)
 
-...
 ```
 if `is_valid` is `true` then `signature` is valid otherwise `signature` is invalid.
 
@@ -45,7 +45,8 @@ Prepare `request_data` from request.
 
 In order to create `signature` you need only `private_key`. Example for create `signature`:
 ```python
-...
+from authorizer import Signer
+
 request_data = {
     'body': {'payment': 'payment', 'amount': 100},
     'headers': {
@@ -70,5 +71,4 @@ request_data = {
 signer = Signer(request_data)
 
 signature = signer.sign(private_key)
-...
 ```
