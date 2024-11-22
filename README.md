@@ -33,7 +33,7 @@ request_data = {
     },
 }
 
-signer = Signer(request_data)
+signer = Signer(**request_data)
 
 is_valid = signer.verify(public_key, signature)
 
@@ -68,7 +68,7 @@ request_data = {
     },
 }
 
-signer = Signer(request_data)
+signer = Signer(**request_data)
 
 signature = signer.sign(private_key)
 ```
