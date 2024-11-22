@@ -1,0 +1,12 @@
+LICENSE.md
+README.md
+setup.py
+authorizer/__init__.py
+authorizer/authorizer.py
+authorizer.egg-info/PKG-INFO
+authorizer.egg-info/SOURCES.txt
+authorizer.egg-info/dependency_links.txt
+authorizer.egg-info/requires.txt
+authorizer.egg-info/top_level.txt
+tests/__init__.py
+tests/test_authorizer.py
