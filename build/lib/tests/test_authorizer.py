@@ -10,8 +10,8 @@ public_key = '-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCg
 
 
 class TestSigner(Signer):
-    def __init__(self, request_data):
-        super(TestSigner, self).__init__(request_data)
+    def __init__(self, **request_data):
+        super(TestSigner, self).__init__(**request_data)
 
     def get_http_method(self):
         return super(TestSigner, self)._get_http_method()
@@ -57,31 +57,31 @@ class TestAuthorizer(unittest.TestCase):
         }
 
     def test_should_successfully_get_http_method(self):
-        signer = TestSigner(self.request_data)
+        signer = TestSigner(**self.request_data)
 
         self.assertEqual('post', signer.get_http_method())
 
     def test_should_fait_to_get_headers_data_when_empty_headers_provided(self):
         request_data = {**self.request_data, 'headers': {}}
 
-        signer = TestSigner(request_data)
+        signer = TestSigner(**request_data)
 
         self.assertRaises(Exception, signer.get_headers_data)
 
     def test_should_successfully_get_headers_data_when_normal_header_provided(self):
-        signer = TestSigner(self.request_data)
+        signer = TestSigner(**self.request_data)
 
         self.assertEqual('host:api.paymentsgateway.averspay.kg&x-api-header:header value&x-api-key:h8z1TDStxu5YY2YuN8jUa9hpzIVbfkLT7kPiPiYj&x-api-timestamp:1636026186643', signer.get_headers_data())
 
     def test_should_successfully_get_query_string_params_data_when_query_string_params_not_provided(self):
         request_data = {**self.request_data, 'query_string_parameters': None}
 
-        signer = TestSigner(request_data)
+        signer = TestSigner(**request_data)
 
         self.assertEqual('', signer.get_query_string_params_data())
 
     def test_should_successfully_get_query_string_params_data_when_query_string_params_provided(self):
-        signer = TestSigner(self.request_data)
+        signer = TestSigner(**self.request_data)
 
         self.assertEqual('best=%D1%82%D0%B5%D1%81%D1%82%20%D0%B4%D0%B0%D1%82%D0%B0&from=0&size=10&test=', signer.get_query_string_params_data())
 
@@ -93,50 +93,50 @@ class TestAuthorizer(unittest.TestCase):
             'best': '%D1%82%D0%B5%D1%81%D1%82%20%D0%B4%D0%B0%D1%82%D0%B0',
         }}
 
-        signer = TestSigner(request_data)
+        signer = TestSigner(**request_data)
 
         self.assertEqual('best=%D1%82%D0%B5%D1%81%D1%82%20%D0%B4%D0%B0%D1%82%D0%B0&from=0&size=10&test=', signer.get_query_string_params_data())
 
     def test_should_successfully_get_simple_path(self):
         request_data = {**self.request_data, 'path': '/services/жаны-cервис'}
 
-        signer = TestSigner(request_data)
+        signer = TestSigner(**request_data)
 
         self.assertEqual('/services/жаны-cервис', signer.get_path())
 
     def test_should_successfully_get_encoded_path(self):
         request_data = {**self.request_data, 'path': '/services/%D0%B6%D0%B0%D0%BD%D1%8B-c%D0%B5%D1%80%D0%B2%D0%B8%D1%81'}
 
-        signer = TestSigner(request_data)
+        signer = TestSigner(**request_data)
 
         self.assertEqual('/services/жаны-cервис', signer.get_path())
 
     def test_should_successfully_get_json_body(self):
-        signer = TestSigner(self.request_data)
+        signer = TestSigner(**self.request_data)
 
         self.assertEqual('{"amount":100,"payment":"payment"}', signer.get_json_body())
 
     def test_should_successfully_get_empty_string_when_there_is_no_body(self):
         request_data = {**self.request_data, 'body': None}
 
-        signer = TestSigner(request_data)
+        signer = TestSigner(**request_data)
 
         self.assertEqual('', signer.get_json_body())
 
     def test_should_successfully_get_data(self):
-        signer = TestSigner(self.request_data)
+        signer = TestSigner(**self.request_data)
 
         self.assertEqual('post\n/services\nhost:api.paymentsgateway.averspay.kg&x-api-header:header value&x-api-key:h8z1TDStxu5YY2YuN8jUa9hpzIVbfkLT7kPiPiYj&x-api-timestamp:1636026186643\nbest=%D1%82%D0%B5%D1%81%D1%82%20%D0%B4%D0%B0%D1%82%D0%B0&from=0&size=10&test=\n{"amount":100,"payment":"payment"}', signer.get_data())
 
     def test_should_successfully_sign(self):
-        signer = TestSigner(self.request_data)
+        signer = TestSigner(**self.request_data)
 
         signature = signer.sign(private_key)
 
         self.assertEqual('TiQCuWaV1WE/VDsbYKn6O0B2diji6MyZI6zjC8Q9lEdnc6KkxURnot1i874fw8q5cyBpLXO6T7dH70VpC11pT1vlrZDZe+PzGnYe27pRqwxU6KcohG5iYp5eeUjQHNaJHL/7zkJdCRu6nIj0z84xbLYMYbPBfTHPPp+viwnGqEdR4wIcjVm18Op3WKgOj5zTv2HB4ATNi31nERYN2R3/ecn+CgK8tIf6Ox3azhNJat3oIQT6Gk10wvAROLsNFKm82Px3CeT/lXO1d8UeeTMNGe8mvo7POGUrH4UJhjsa1myvpNyKeW1vF1kuSv8bFcoJfkXbiZ51gHGxpoL8MmYhlA==', signature)
 
     def test_should_successfully_verify(self):
-        signer = TestSigner(self.request_data)
+        signer = TestSigner(**self.request_data)
 
         signature = signer.sign(private_key)
 
@@ -145,7 +145,7 @@ class TestAuthorizer(unittest.TestCase):
         self.assertTrue(is_valid)
 
     def test_should_fail_to_verify_with_incorrect_signature(self):
-        signer = TestSigner(self.request_data)
+        signer = TestSigner(**self.request_data)
 
         is_valid = signer.verify(public_key, incorrect_sign_text)
 
@@ -157,13 +157,13 @@ class TestAuthorizer(unittest.TestCase):
             'path': '/services/%D0%B6%D0%B0%D0%BD%D1%8B-c%D0%B5%D1%80%D0%B2%D0%B8%D1%81'
         }
 
-        signer1 = TestSigner(encoded_path_data)
+        signer1 = TestSigner(**encoded_path_data)
 
         simple_path_data = {
             **self.request_data,
             'path': '/services/жаны-cервис'
         }
 
-        signer2 = TestSigner(simple_path_data)
+        signer2 = TestSigner(**simple_path_data)
 
         self.assertEqual(signer1.sign(private_key), signer2.sign(private_key))
