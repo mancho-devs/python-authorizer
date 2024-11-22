@@ -4,53 +4,52 @@ from urllib.parse import quote, unquote
 from Crypto.Hash import SHA256
 from Crypto.Signature import PKCS1_v1_5
 from Crypto.PublicKey import RSA
+from typing import Any, Dict
 
 
 class Signer:
-    def __init__(self, request_data):
-        self.request_data = request_data
+    def __init__(self, headers: Dict[str, Any], http_method: str, path: str = None, body: str = None, query_string_parameters: Any = None):
+        self.headers = headers
+        self.http_method = http_method
+        self.path = path
+        self.body = body
+        self.query_string_parameters = query_string_parameters
 
     def _get_http_method(self):
-        return self.request_data['http_method'].lower()
+        return self.http_method.lower()
 
     def _get_path(self):
-        return unquote(self.request_data['path'])
+        return unquote(self.path)
 
     def _get_headers_data(self):
-
-        headers = self.request_data['headers']
-
-        if 'Host' not in headers.keys():
+        if 'Host' not in self.headers.keys():
             raise Exception("Header 'Host' is required")
 
-        host = headers['Host']
+        host = self.headers['Host']
 
         header_data = f'host:{str(host)}'
 
-        sorted_headers_key = sorted(filter(lambda key: key.startswith('x-api-'), headers))
+        sorted_headers_key = sorted(filter(lambda key: key.startswith('x-api-'), self.headers))
 
-        headers_data = list(map(lambda key: f'{key.lower()}:{str(headers[key])}', sorted_headers_key))
+        headers_data = list(map(lambda key: f'{key.lower()}:{str(self.headers[key])}', sorted_headers_key))
 
         return '&'.join([header_data, *headers_data])
 
     def _get_query_string_params_data(self):
-        if 'query_string_parameters' not in self.request_data.keys():
-            self.request_data['query_string_parameters'] = None
-
-        query_params = self.request_data['query_string_parameters'] or {}
+        query_params = self.query_string_parameters or {}
 
         query_params_data = map(lambda key: f'{quote(unquote(key))}={quote(unquote(query_params[key] or ""))}', sorted(query_params))
 
         return '&'.join(query_params_data)
 
     def _get_json_body(self):
-        if 'body' not in self.request_data.keys() or not self.request_data['body']:
+        if not self.body:
             return ''
 
         sorted_body = {}
 
-        for key in sorted(self.request_data['body']):
-            sorted_body[key] = self.request_data['body'][key]
+        for key in sorted(self.body):
+            sorted_body[key] = self.body[key]
 
         body = json.dumps(sorted_body, separators=(',', ':'))
 
