@@ -1,4 +1,4 @@
-# Authorizer for Averspay Payments Gateway API
+# Authorization using signature
 
 ## Installation
 ```bash
