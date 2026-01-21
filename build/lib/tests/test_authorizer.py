@@ -123,6 +123,11 @@ class TestAuthorizer(unittest.TestCase):
 
         self.assertEqual('{"amount":100,"payment":"payment"}', signer.get_json_body())
 
+    def test_should_successfully_get_json_body_with_cyrillic(self):
+        signer = TestSigner(**self.request_data, body={'payment': 'платеж', 'amount': 100})
+
+        self.assertEqual('{"amount":100,"payment":"платеж"}', signer.get_json_body())
+
     def test_should_successfully_get_empty_string_when_there_is_no_body(self):
         request_data = {**self.request_data, 'body': None}
 
