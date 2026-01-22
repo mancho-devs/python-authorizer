@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: python-authorizer
-Version: 0.0.8
+Version: 0.0.11
 Summary: Authorizer for Payments Gateway server and Payments Gateway clients
 Home-page: https://@github.com/mancho-devs/python-authorizer
 Author: Mancho
@@ -14,7 +14,7 @@ Requires-Python: >=3.6
 Description-Content-Type: text/markdown
 License-File: LICENSE.md
 
-# Authorizer for Averspay Payments Gateway API
+# Authorization using signature
 
 ## Installation
 ```bash
@@ -49,7 +49,7 @@ request_data = {
     },
 }
 
-signer = Signer(request_data)
+signer = Signer(**request_data)
 
 is_valid = signer.verify(public_key, signature)
 
@@ -84,7 +84,7 @@ request_data = {
     },
 }
 
-signer = Signer(request_data)
+signer = Signer(**request_data)
 
 signature = signer.sign(private_key)
 ```

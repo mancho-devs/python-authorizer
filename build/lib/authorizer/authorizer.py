@@ -51,7 +51,7 @@ class Signer:
         for key in sorted(self.body):
             sorted_body[key] = self.body[key]
 
-        body = json.dumps(sorted_body, separators=(',', ':'))
+        body = json.dumps(sorted_body, separators=(',', ':'), ensure_ascii=False)
 
         return body
 

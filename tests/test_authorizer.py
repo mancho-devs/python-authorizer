@@ -36,7 +36,7 @@ class TestAuthorizer(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         cls.request_data = {
-            'body': {'payment': 'payment', 'amount': 100},
+            'body': {'payment': 'payment', 'amount': 100, 'cyrillic_data': 'платеж'},
             'headers': {
                 'Host': 'api.paymentsgateway.averspay.kg',
                 'x-api-timestamp': '1636026186643',
@@ -121,7 +121,7 @@ class TestAuthorizer(unittest.TestCase):
     def test_should_successfully_get_json_body(self):
         signer = TestSigner(**self.request_data)
 
-        self.assertEqual('{"amount":100,"payment":"payment"}', signer.get_json_body())
+        self.assertEqual('{"amount":100,"cyrillic_data":"платеж","payment":"payment"}', signer.get_json_body())
 
     def test_should_successfully_get_empty_string_when_there_is_no_body(self):
         request_data = {**self.request_data, 'body': None}
@@ -133,14 +133,14 @@ class TestAuthorizer(unittest.TestCase):
     def test_should_successfully_get_data(self):
         signer = TestSigner(**self.request_data)
 
-        self.assertEqual('post\n/services\nhost:api.paymentsgateway.averspay.kg&x-api-header:header value&x-api-key:h8z1TDStxu5YY2YuN8jUa9hpzIVbfkLT7kPiPiYj&x-api-timestamp:1636026186643\nbest=%D1%82%D0%B5%D1%81%D1%82%20%D0%B4%D0%B0%D1%82%D0%B0&from=0&size=10&test=\n{"amount":100,"payment":"payment"}', signer.get_data())
+        self.assertEqual('post\n/services\nhost:api.paymentsgateway.averspay.kg&x-api-header:header value&x-api-key:h8z1TDStxu5YY2YuN8jUa9hpzIVbfkLT7kPiPiYj&x-api-timestamp:1636026186643\nbest=%D1%82%D0%B5%D1%81%D1%82%20%D0%B4%D0%B0%D1%82%D0%B0&from=0&size=10&test=\n{"amount":100,"cyrillic_data":"платеж","payment":"payment"}', signer.get_data())
 
     def test_should_successfully_sign(self):
         signer = TestSigner(**self.request_data)
 
         signature = signer.sign(private_key)
 
-        self.assertEqual('TiQCuWaV1WE/VDsbYKn6O0B2diji6MyZI6zjC8Q9lEdnc6KkxURnot1i874fw8q5cyBpLXO6T7dH70VpC11pT1vlrZDZe+PzGnYe27pRqwxU6KcohG5iYp5eeUjQHNaJHL/7zkJdCRu6nIj0z84xbLYMYbPBfTHPPp+viwnGqEdR4wIcjVm18Op3WKgOj5zTv2HB4ATNi31nERYN2R3/ecn+CgK8tIf6Ox3azhNJat3oIQT6Gk10wvAROLsNFKm82Px3CeT/lXO1d8UeeTMNGe8mvo7POGUrH4UJhjsa1myvpNyKeW1vF1kuSv8bFcoJfkXbiZ51gHGxpoL8MmYhlA==', signature)
+        self.assertEqual('n2nMbkKnyCPrUux+9Vk+uDsxTR2hjqY01NGrd3288x5o5ab2kGphYq8sWw1SjRqzz4IOs+Q3PyeyjvIGoWMA88EoeonaGDrXYOnuJHmydmy5TsSQ6OianFdBgBurcm8wbI6TnZcIG/AeGkMlpF4fLSnelWOfB8apKPI3GMmqSpo25bkhhcdVKbP4IyHUPbRAj77JNDcl7bwD3I/l1slkcjiiweHKjwd2SpvNw/D1SyFV0/U5+s3kyMoAnVp6PHwSHmxVlbyIWCLlcTueMbBtdNFij+xTuarvaS0nQM1K1co2l/ix6jVaKX7S/g1zoUdgq06jd1Q8qGwh7wNR5L0QeQ==', signature)
 
     def test_should_successfully_verify(self):
         signer = TestSigner(**self.request_data)
